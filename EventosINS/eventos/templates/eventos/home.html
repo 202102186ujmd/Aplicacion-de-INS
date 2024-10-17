@@ -107,23 +107,28 @@
     <div class="container">
         <h2 class="text-center mb-4">Tendencias</h2>
         <div class="row">
-            {% for evento in eventos %}
-                <div class="col-md-3">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ evento.titulo }}</h5>
-                            <p class="card-text">{{ evento.descripcion|truncatewords:15 }}</p>
-                            <p><strong>Fecha:</strong> {{ evento.fecha|date:"d M, Y" }}</p>
-                            <p><strong>Ubicación:</strong> {{ evento.ubicacion }}</p> <!-- Nueva línea -->
-                            <p><strong>Privacidad:</strong> {{ evento.privacidad }}</p> <!-- Nueva línea -->
-                            <a href="{% url 'evento_detail' evento.id_evento %}" class="btn btn-primary">Ver detalles</a> <!-- Cambio de evento.id a evento.id_evento -->
+            {% if eventos %}
+                {% for evento in eventos %}
+                    <div class="col-md-3">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ evento.titulo }}</h5>
+                                <p class="card-text">{{ evento.descripcion|truncatewords:15 }}</p>
+                                <p><strong>Fecha:</strong> {{ evento.fecha|date:"d M, Y" }}</p>
+                                <p><strong>Ubicación:</strong> {{ evento.ubicacion }}</p>
+                                <p><strong>Privacidad:</strong> {{ evento.privacidad }}</p>
+                                <a href="{% url 'evento_detail' evento.id_evento %}" class="btn btn-primary">Ver detalles</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <p class="text-center">No hay eventos disponibles en este momento.</p>
+            {% endif %}
         </div>
     </div>
 </section>
+
 
 <!-- Preguntas frecuentes -->
 <section class="faq-section">
