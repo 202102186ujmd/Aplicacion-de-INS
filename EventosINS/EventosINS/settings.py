@@ -141,3 +141,6 @@ LOGIN_REDIRECT_URL = '/dashboard/'  # Puedes cambiar esto a donde desees redirig
 
 # URL para redirigir en caso de que no esté autenticado
 LOGIN_URL = '/login/'
+
+# settings.py
+AUTHENTICATION_BACKENDS = ['eventos.backends.CustomBackend']

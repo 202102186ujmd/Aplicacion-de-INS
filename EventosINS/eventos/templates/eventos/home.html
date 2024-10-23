@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma de Eventos UJMD</title>
-    <!-- Cargar archivos estáticos -->
-    {% load static %}
+    <title>Eventos UJMD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -13,121 +12,170 @@
             color: #ffffff;
             font-family: 'Poppins', sans-serif;
         }
-
-        /* Fondo y hero section */
-        .hero-section {
-            background-image: url("{% static 'Imagen.jpg' %}");
-            background-size: cover;
-            padding: 10rem 0;
-            text-align: center;
-            color: white;
-        }
-
-        .hero-section h1 {
-            font-size: 4rem;
-            font-weight: bold;
-        }
-
-        .hero-section p {
-            font-size: 1.5rem;
-        }
-
-        /* Encabezado estilo Netflix */
         .navbar {
-            background-color: #181818;
+            background-color: #1b1b1b;
         }
-
         .navbar-brand {
-            color: #E50914;
-        }
-
-        .navbar-nav .nav-link {
             color: #ffffff;
-            font-size: 1rem;
         }
-
-        .navbar-nav .nav-link:hover {
-            color: #E50914;
+        .navbar-nav .nav-link {
+            color: #c7c7c7;
         }
-
-        /* Sección de eventos (Tendencias) */
+        .hero-section {
+            background: url('{% static "Imagen.jpg" %}') no-repeat center center;
+            background-size: cover;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+        }
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        .hero-section h1 {
+            font-size: 3rem;
+            color: #ffffff;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-section p {
+            font-size: 1.2rem;
+            color: #c7c7c7;
+            position: relative;
+            z-index: 2;
+        }
         .tendencias-section {
-            background-color: #181818;
+            background-color: #1b1b1b;
             padding: 3rem 0;
         }
-
         .card {
-            background-color: #2C2C2C;
+            background-color: #242424;
             border: none;
-            border-radius: 10px;
         }
-
         .card-title {
-            color: white;
+            color: #ffffff;
         }
-
         .card-text {
             color: #c7c7c7;
         }
-
         .btn-primary {
-            background-color: #E50914;
+            background-color: #e50914;
             border: none;
         }
 
-        .btn-primary:hover {
-            background-color: #F40612;
+        /* Sección de preguntas frecuentes */
+        .faq-section {
+            background-color: #1b1b1b;
+            padding: 3rem 0;
         }
-
-        /* Acordeón estilo Netflix */
         .faq-section .accordion-button {
-            background-color: #2C2C2C;
-            color: white;
+            background-color: #242424;
+            color: #ffffff;
         }
-
         .faq-section .accordion-body {
             background-color: #181818;
             color: #c7c7c7;
         }
 
-        /* Pie de página */
+        /* Footer actualizado */
         .footer {
-            background-color: #181818;
-            padding: 2rem 0;
+            width: 100%; /* Cambiado para que el footer abarque todo el ancho */
+            max-width: none; /* Eliminado el max-width para que no haya restricción */
+            margin: 0; /* Eliminado el margen para que se alinee con los bordes de la página */
+            padding: 30px 20px;
+            background-color: #000;
         }
-
+        .footer-top {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .footer-top h2 {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .email-form {
+            display: flex;
+            justify-content: center;
+        }
+        .email-input {
+            background-color: #333;
+            border: none;
+            padding: 15px;
+            width: 300px;
+            color: #fff;
+        }
+        .start-button {
+            background-color: #e50914;
+            color: #fff;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .footer-links a {
+            color: #757575;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        .language-select {
+            background-color: #000;
+            color: #757575;
+            border: 1px solid #333;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .footer-contact {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #757575;
+        }
         .footer p {
             color: #c7c7c7;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-<!-- Navegación estilo Netflix -->
-<nav class="navbar navbar-expand-lg">
+<!-- Navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Eventos UJMD</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Iniciar Sesión</a>
+                    <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contacto</a>
+                    <a class="nav-link" href="{% url 'about' %}">Contacto</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- Hero Section -->
+<!-- Sección principal -->
 <section class="hero-section">
     <div class="container">
         <h1>Películas y Eventos Ilimitados</h1>
-        <p>Accede a los mejores eventos de la Universidad Dr. Jose Matías Delgado.</p>
+        <p>Accede a los mejores eventos educativos de la Universidad Dr. Jose Matías Delgado.</p>
     </div>
 </section>
 
@@ -146,7 +194,7 @@
                                 <p><strong>Fecha:</strong> {{ evento.fecha|date:"d M, Y" }}</p>
                                 <p><strong>Ubicación:</strong> {{ evento.ubicacion }}</p>
                                 <p><strong>Privacidad:</strong> {{ evento.privacidad }}</p>
-                                <a href="#" class="btn btn-primary">Ver detalles</a>
+                                <a href="{% url 'evento_detail' evento.id_evento %}" class="btn btn-primary">Ver detalles</a>
                             </div>
                         </div>
                     </div>
@@ -158,14 +206,65 @@
     </div>
 </section>
 
-<!-- Pie de página -->
-<footer class="footer">
+<!-- Sección de Preguntas Frecuentes -->
+<section class="faq-section">
     <div class="container">
-        <p class="text-center">© 2024 Universidad Dr. Jose Matías Delgado. Todos los derechos reservados.</p>
+        <h3 class="text-center mb-4">Preguntas Frecuentes</h3>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        ¿Qué es esta plataforma?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Es una plataforma para gestionar eventos educativos y profesionales de la Universidad Dr. Jose Matías Delgado.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer actualizado -->
+<footer class="footer">
+    <div class="footer-top">
+        <h2>¿Quieres ver Netflix ya? Ingresa tu email para crear una cuenta o reiniciar tu membresía de Netflix.</h2>
+        <div class="email-form">
+            <input type="email" class="email-input" placeholder="Email">
+            <button class="start-button">Comenzar ></button>
+        </div>
+    </div>
+    <div class="footer-contact">
+        <p>¿Preguntas? Llama al <a href="tel:14086001720">1 (408) 600-1720 (USA)</a></p>
+    </div>
+    <div class="footer-links">
+        <a href="#">Preguntas frecuentes</a>
+        <a href="#">Centro de ayuda</a>
+        <a href="#">Cuenta</a>
+        <a href="#">Prensa</a>
+        <a href="#">Relaciones con inversionistas</a>
+        <a href="#">Empleo</a>
+        <a href="#">Formas de ver</a>
+        <a href="#">Términos de uso</a>
+        <a href="#">Privacidad</a>
+        <a href="#">Preferencias de cookies</a>
+        <a href="#">Información corporativa</a>
+        <a href="#">Contáctanos</a>
+        <a href="#">Prueba de velocidad</a>
+        <a href="#">Avisos legales</a>
+        <a href="#">Solo en Netflix</a>
+    </div>
+    <div class="footer-contact">
+        <select class="language-select">
+            <option>Español</option>
+            <option>English</option>
+        </select>
+        <p>Netflix El Salvador</p>
     </div>
 </footer>
 
-<!-- Scripts de Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
