@@ -8,5 +8,12 @@
 <body>
     <h1>Bienvenido al Dashboard del Administrador</h1>
     <p>Esta es la página de administración.</p>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Cerrar Sesión</button>
+    </form>
+    
+
+
 </body>
 </html>

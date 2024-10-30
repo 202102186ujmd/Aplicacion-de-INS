@@ -1,71 +1,88 @@
-# views.py
-from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import LoginForm
-from .models import Evento, Usuario
-from datetime import datetime  # Para obtener la fecha actual
-from django.urls import reverse
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.contrib.auth import login, authenticate
+from django.contrib import messages
+from .models import Event
+from django.contrib.auth.views import (
+    PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+)
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
-# Vista para el login
-def custom_login(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            user = authenticate(request, email=email, password=password)
-            if user is not None:
-                login(request, user)
 
-                # Verificar el rol del usuario y redirigir según corresponda
-                if user.rol.nombre_rol == 'Administrador':
-                    return redirect(reverse('admin_dashboard'))  # Redirige a la página del administrador
-                elif user.rol.nombre_rol == 'Editor':
-                    return redirect(reverse('editor_dashboard'))  # Redirige a la página del editor
-                elif user.rol.nombre_rol == 'Usuario':
-                    return redirect(reverse('user_dashboard'))  # Redirige a la página del usuario
-            else:
-                form.add_error(None, 'Credenciales inválidas')
-    else:
-        form = LoginForm()
-    
-    return render(request, 'eventos/login.html', {'form': form})
-
-# Vista para la página principal
+# Página principal (Home)
 def home(request):
-    # Obtener la fecha actual
-    now = datetime.now()
-
-    # Filtrar eventos que ocurren en el mes actual y con privacidad específica
-    eventos = Evento.objects.filter(
-        fecha__year=now.year,
-        fecha__month=now.month,
-        privacidad='publico',  # Cambia 'publico' por el valor de privacidad que desees
-        estado='activo'  # Asumiendo que solo mostramos eventos activos
-    )
-
-    return render(request, 'eventos/home.html', {'eventos': eventos})
-
-# Vista para la página de about
-def about_view(request):
-    return render(request, 'eventos/about.html')
-
-# Vista para los detalles del evento
-def evento_detail(request, id_evento):
-    # Obtener el evento o mostrar un error 404 si no existe
-    evento = get_object_or_404(Evento, id_evento=id_evento)
-
-    # Renderizar la plantilla 'evento_detail.html' con los detalles del evento
-    return render(request, 'eventos/evento_detail.html', {'evento': evento})
+    # Mostrar solo los eventos públicos
+    eventos = Event.objects.filter(is_public=True)
+    return render(request, 'eventos/index.html', {'eventos': eventos})
 
 # Vista para el dashboard del administrador
 def admin_dashboard(request):
     return render(request, 'eventos/admin_dashboard.html')
 
-# Vista para el dashboard del editor
-def editor_dashboard(request):
-    return render(request, 'eventos/editor_dashboard.html')
 
-# Vista para el dashboard del usuario
-def user_dashboard(request):
-    return render(request, 'eventos/user_dashboard.html')
+# Vista personalizada de Login
+class CustomLoginView(LoginView):
+    template_name = 'eventos/login.html'
+    redirect_authenticated_user = True
+    success_url = reverse_lazy('admin_dashboard')  # Ajuste con reverse_lazy
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+# Registro de usuario
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, 'Tu cuenta ha sido creada y has iniciado sesión.')
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
+
+
+# Detalle del evento
+@login_required
+def event_detail(request, id):
+    evento = get_object_or_404(Event, id=id)
+    return render(request, 'evento_detail.html', {'evento': evento})
+
+# Vistas personalizadas para recuperación de contraseña con plantilla de correo en HTML
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'registration/password_reset.html'
+    html_email_template_name = 'registration/password_reset_email.html'  # Plantilla HTML para el correo
+    success_url = reverse_lazy('password_reset_done')
+    
+    def send_mail(self, subject_template_name, email_template_name, context, from_email, to_email, html_email_template_name=None):
+        subject = render_to_string(subject_template_name, context).strip()
+        body = render_to_string(email_template_name, context).strip()
+
+        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
+        if html_email_template_name:
+            html_email = render_to_string(html_email_template_name, context)
+            email_message.attach_alternative(html_email, "text/html")
+        email_message.send()
+
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'registration/password_reset_done.html'
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'registration/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'registration/password_reset_complete.html'
+
+
+def about(request):
+    return render(request, 'eventos/about.html')
