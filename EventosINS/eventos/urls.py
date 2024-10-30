@@ -1,6 +1,12 @@
 from django.contrib import admin
 from django.urls import path
-from django.contrib.auth.views import LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.contrib.auth.views import (
+    LogoutView,
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView
+)
 from eventos import views  # Importa las vistas desde la app 'eventos'
 
 urlpatterns = [
@@ -16,11 +22,20 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
 
-    # Rutas para la recuperación de contraseña con las nuevas plantillas en 'registration/'
-    path('password_reset/', PasswordResetView.as_view(template_name='registration/password_reset.html'), name='password_reset'),
-    path('password_reset/done/', PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
-    path('reset/done/', PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
+    # Rutas para la recuperación de contraseña usando plantillas personalizadas para las vistas,
+    # pero dejando el correo con la plantilla por defecto de Django
+    path('password_reset/', PasswordResetView.as_view(
+        template_name='registration/password_reset.html'
+    ), name='password_reset'),  # Página de solicitud de restablecimiento de contraseña
+    path('password_reset/done/', PasswordResetDoneView.as_view(
+        template_name='registration/password_reset_done.html'
+    ), name='password_reset_done'),  # Confirmación de envío de correo para restablecer contraseña
+    path('reset/<uidb64>/<token>/', PasswordResetConfirmView.as_view(
+        template_name='registration/password_reset_confirm.html'
+    ), name='password_reset_confirm'),  # Página para ingresar la nueva contraseña
+    path('reset/done/', PasswordResetCompleteView.as_view(
+        template_name='registration/password_reset_complete.html'
+    ), name='password_reset_complete'),  # Confirmación de restablecimiento exitoso
 
     # Ruta para ver detalles de un evento (requiere autenticación)
     path('event/<int:id>/', views.event_detail, name='evento_detail'),
