@@ -1,3 +1,4 @@
+# eventos/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
@@ -11,7 +12,7 @@ from django.contrib.auth.views import (
 )
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-
+from .forms import CustomSetPasswordForm  # Asegúrate de haber importado el formulario personalizado
 
 # Página principal (Home)
 def home(request):
@@ -59,6 +60,7 @@ def event_detail(request, id):
 # Vistas personalizadas para recuperación de contraseña con plantilla de correo en HTML
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'registration/password_reset.html'
+    email_template_name = 'registration/password_reset_email.txt'  # Plantilla de texto plano para el correo
     html_email_template_name = 'registration/password_reset_email.html'  # Plantilla HTML para el correo
     success_url = reverse_lazy('password_reset_done')
     
@@ -78,6 +80,7 @@ class CustomPasswordResetDoneView(PasswordResetDoneView):
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = 'registration/password_reset_confirm.html'
+    form_class = CustomSetPasswordForm  # Utiliza el formulario personalizado para añadir estilos
     success_url = reverse_lazy('password_reset_complete')
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
